@@ -1,30 +1,30 @@
 /* Service Worker for CareQueue Push Notifications */
 
 self.addEventListener('push', (event) => {
-  let data = { title: 'CareQueue Clinic', body: 'You have a new notification.' };
+  // For no-payload push (empty body), show a default notification
+  const title = '🔔 CareQueue — Your Turn!';
+  const body = 'You are next! Please head to the clinic now.';
+
+  let data = { title, body };
 
   try {
-    if (event.data) {
-      data = event.data.json();
+    if (event.data && event.data.text()) {
+      const parsed = JSON.parse(event.data.text());
+      data = { title: parsed.title || title, body: parsed.body || parsed.message || body };
     }
   } catch (e) {
-    if (event.data) {
-      data.body = event.data.text();
-    }
+    // No payload or invalid JSON — use defaults
   }
 
   const options = {
-    body: data.body || data.message || 'You have a new notification.',
+    body: data.body,
     icon: '/favicon.ico',
     badge: '/favicon.ico',
-    vibrate: [200, 100, 200],
-    tag: 'carequeue-notification',
+    vibrate: [200, 100, 200, 100, 200],
+    tag: 'carequeue-turn',
     renotify: true,
     requireInteraction: true,
-    data: {
-      url: data.url || '/',
-      appointmentId: data.appointmentId || null
-    },
+    data: { url: '/my-appointments' },
     actions: [
       { action: 'open', title: 'Open App' },
       { action: 'dismiss', title: 'Dismiss' }
@@ -32,27 +32,25 @@ self.addEventListener('push', (event) => {
   };
 
   event.waitUntil(
-    self.registration.showNotification(data.title || 'CareQueue Clinic', options)
+    self.registration.showNotification(data.title, options)
   );
 });
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  const url = event.notification.data?.url || '/';
-
   if (event.action === 'dismiss') return;
+
+  const url = event.notification.data?.url || '/';
 
   event.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      // Focus existing tab if found
       for (const client of clientList) {
         if (client.url.includes(self.location.origin) && 'focus' in client) {
           client.navigate(url);
           return client.focus();
         }
       }
-      // Open new tab
       return clients.openWindow(url);
     })
   );

@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import { Activity, CalendarCheck, CheckCircle, Clock, Users } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { readableSlot, toDateInput } from '../lib/dates';
+import { sendPushToSubscription } from '../lib/webpush';
 
 const statuses = ['pending', 'in_progress', 'done', 'cancelled'];
 const tabs = ['upcoming', 'all', 'cancelled'];
@@ -108,13 +109,22 @@ export default function AdminDashboard() {
 
         // 2) Send Web Push notification (works even if patient has left the site)
         try {
-          await supabase.functions.invoke('send-push-notification', {
-            body: {
-              patient_id: nextOnSameDate.patient_id,
-              message: notifMessage,
-              title: '🔔 CareQueue — Your Turn!'
+          const { data: pushSub } = await supabase
+            .from('push_subscriptions')
+            .select('subscription_json')
+            .eq('user_id', nextOnSameDate.patient_id)
+            .single();
+
+          if (pushSub?.subscription_json) {
+            const result = await sendPushToSubscription(pushSub.subscription_json);
+            if (result.ok) {
+              console.log('Push notification sent successfully');
+            } else {
+              console.warn('Push notification failed with status:', result.status);
             }
-          });
+          } else {
+            console.warn('No push subscription found for patient');
+          }
         } catch (pushErr) {
           console.warn('Push notification error:', pushErr.message);
         }
