@@ -1,0 +1,308 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── BASE ─────────────────────────────────────── */
+@layer base {
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'DM Sans', 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    background: #F4F7FE;
+    color: #1B2559;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  button, input, textarea, select { font: inherit; }
+}
+
+/* ── COMPONENTS ───────────────────────────────── */
+@layer components {
+
+  /* ═══ ADMIN LAYOUT ═══ */
+  .admin-layout { display: flex; min-height: 100vh; }
+
+  .admin-sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 80px;
+    background: #fff; border-right: 1px solid #E9EDF7;
+    display: flex; flex-direction: column; justify-content: space-between;
+    align-items: center; padding: 20px 0; z-index: 40;
+  }
+  .sidebar-top { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .sidebar-logo {
+    width: 46px; height: 46px; border-radius: 14px;
+    background: #4A6CF7; color: #fff;
+    display: grid; place-items: center; margin-bottom: 20px;
+    text-decoration: none; transition: opacity .2s;
+  }
+  .sidebar-logo:hover { opacity: .9; }
+  .sidebar-nav { display: flex; flex-direction: column; gap: 4px; }
+  .sidebar-icon-btn {
+    width: 46px; height: 46px; border-radius: 14px;
+    display: grid; place-items: center; color: #8F9BBA;
+    background: transparent; border: none; cursor: pointer;
+    transition: all .2s; text-decoration: none;
+  }
+  .sidebar-icon-btn:hover { background: #F4F7FE; color: #4A6CF7; }
+  .sidebar-icon-btn.active { background: #4A6CF7; color: #fff; }
+  .sidebar-bottom { display: flex; flex-direction: column; align-items: center; }
+
+  .admin-main { flex: 1; margin-left: 80px; min-height: 100vh; width: calc(100% - 80px); }
+
+  .admin-topbar {
+    position: sticky; top: 0; z-index: 30;
+    background: rgba(244,247,254,.92); backdrop-filter: blur(12px);
+    padding: 14px 28px; display: flex; align-items: center;
+    justify-content: space-between; border-bottom: 1px solid #E9EDF7;
+  }
+  .topbar-title { font-size: 1.1rem; font-weight: 700; color: #1B2559; }
+  .topbar-actions { display: flex; align-items: center; gap: 10px; }
+  .topbar-icon {
+    width: 38px; height: 38px; border-radius: 50%; background: #fff;
+    border: 1px solid #E9EDF7; display: grid; place-items: center;
+    color: #4A6CF7; cursor: pointer; transition: all .2s;
+  }
+  .topbar-icon:hover { background: #F0F3FF; }
+  .topbar-profile { display: flex; align-items: center; gap: 10px; margin-left: 6px; }
+  .topbar-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #4A6CF7; color: #fff; display: grid; place-items: center;
+  }
+  .topbar-user-info { display: flex; flex-direction: column; }
+  .topbar-username { font-size: .8rem; font-weight: 600; color: #1B2559; }
+  .topbar-role { font-size: .7rem; color: #8F9BBA; }
+  .admin-content { padding: 24px 28px; }
+
+  /* ═══ PATIENT LAYOUT ═══ */
+  .patient-header {
+    position: sticky; top: 0; z-index: 30;
+    background: #fff; border-bottom: 1px solid #E9EDF7;
+  }
+  .header-inner {
+    max-width: 1200px; margin: 0 auto; padding: 12px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .header-logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none; font-weight: 700; font-size: 1.05rem; color: #1B2559;
+  }
+  .header-logo-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: #4A6CF7; color: #fff; display: grid; place-items: center;
+  }
+  .header-nav-desktop { display: none; align-items: center; gap: 4px; }
+  .header-actions { display: flex; align-items: center; gap: 8px; }
+  .header-mobile-nav {
+    display: flex; gap: 6px; padding: 8px 16px 10px;
+    overflow-x: auto; border-top: 1px solid #F1F5F9;
+  }
+  .patient-content { max-width: 1200px; margin: 0 auto; padding: 16px; }
+
+  @media (min-width: 768px) {
+    .header-nav-desktop { display: flex; }
+    .header-inner { padding: 12px 20px; }
+    .patient-content { padding: 20px; }
+  }
+
+  /* ═══ NAV PILL ═══ */
+  .nav-pill {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 8px 16px; border-radius: 10px; font-size: .85rem;
+    font-weight: 500; color: #8F9BBA; text-decoration: none;
+    transition: all .2s; white-space: nowrap;
+  }
+  .nav-pill:hover { background: #F4F7FE; color: #4A6CF7; }
+  .nav-pill.active { background: #4A6CF7; color: #fff; }
+
+  /* ═══ BUTTONS ═══ */
+  .btn-filled, .btn-outline, .btn-danger, .btn-primary, .btn-secondary {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 20px; border-radius: 10px; font-size: .85rem;
+    font-weight: 600; cursor: pointer; transition: all .2s;
+    border: none; text-decoration: none; white-space: nowrap;
+  }
+  .btn-filled, .btn-primary { background: #4A6CF7; color: #fff; }
+  .btn-filled:hover, .btn-primary:hover { background: #3B5DE0; }
+  .btn-filled:disabled, .btn-primary:disabled { opacity: .5; cursor: not-allowed; }
+
+  .btn-outline, .btn-secondary { background: #fff; color: #2B3674; border: 1px solid #E9EDF7; }
+  .btn-outline:hover, .btn-secondary:hover { border-color: #4A6CF7; color: #4A6CF7; }
+
+  .btn-danger { background: #FFF5F5; color: #E31A1A; border: 1px solid #FED7D7; }
+  .btn-danger:hover { background: #FED7D7; }
+
+  .mobile-menu-toggle {
+    width: 38px; height: 38px; border-radius: 10px;
+    border: 1px solid #E9EDF7; background: #fff;
+    display: grid; place-items: center; color: #1B2559; cursor: pointer;
+  }
+
+  /* ═══ FORM ═══ */
+  .field-label { display: grid; gap: 6px; font-size: .85rem; font-weight: 600; color: #2B3674; }
+  .field {
+    width: 100%; min-height: 44px; padding: 10px 14px;
+    border-radius: 10px; border: 1px solid #E9EDF7;
+    background: #fff; color: #1B2559; outline: none;
+    font-size: .875rem; transition: all .2s;
+  }
+  .field:focus { border-color: #4A6CF7; box-shadow: 0 0 0 3px rgba(74,108,247,.08); }
+
+  /* ═══ SEGMENTS / TABS ═══ */
+  .segment, .segment-active {
+    padding: 8px 14px; border-radius: 8px; font-size: .78rem;
+    font-weight: 600; cursor: pointer; transition: all .2s;
+    border: none; background: transparent; white-space: nowrap;
+  }
+  .segment { color: #8F9BBA; }
+  .segment:hover { color: #2B3674; background: #F4F7FE; }
+  .segment-active { background: #4A6CF7; color: #fff; }
+
+  /* ═══ SLOT BUTTONS ═══ */
+  .slot-button {
+    display: flex; align-items: center; justify-content: space-between;
+    min-height: 48px; padding: 10px 14px; border-radius: 10px;
+    border: 1px solid #E9EDF7; background: #fff;
+    font-size: .85rem; font-weight: 600; color: #2B3674;
+    cursor: pointer; transition: all .2s;
+  }
+  .slot-button:hover:not(:disabled) { border-color: #4A6CF7; }
+  .slot-button:disabled { opacity: .45; cursor: not-allowed; background: #FAFBFF; }
+  .slot-selected { border-color: #4A6CF7 !important; background: #F0F3FF; color: #4A6CF7; }
+
+  /* ═══ STATUS BADGES ═══ */
+  .status { display: inline-flex; align-items: center; gap: 5px; border-radius: 20px; padding: 4px 10px; font-size: .7rem; font-weight: 700; text-transform: capitalize; white-space: nowrap; }
+  .status-pending { background: #F0F3FF; color: #4A6CF7; }
+  .status-in_progress, .status-progress { background: #FFF8E1; color: #E9A800; }
+  .status-done { background: #E6FFF3; color: #01B574; }
+  .status-cancelled { background: #FFF5F5; color: #E31A1A; }
+
+  /* ═══ ICON BUTTON ═══ */
+  .icon-btn {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: grid; place-items: center; border: 1px solid #E9EDF7;
+    background: #fff; cursor: pointer; transition: all .2s; padding: 0;
+  }
+  .icon-btn:hover { border-color: #4A6CF7; color: #4A6CF7; }
+
+  /* ═══ DATA TABLE ═══ */
+  .data-table { width: 100%; min-width: 700px; border-collapse: collapse; text-align: left; font-size: .82rem; }
+  .data-table th { padding: 12px 14px; font-weight: 600; color: #8F9BBA; background: #FAFBFF; font-size: .72rem; text-transform: uppercase; letter-spacing: .04em; }
+  .data-table td { padding: 12px 14px; border-top: 1px solid #F1F5F9; vertical-align: middle; color: #2B3674; }
+  .data-table tr:hover td { background: #FAFBFF; }
+
+  /* ═══ METRIC CARD ═══ */
+  .metric-card {
+    border-radius: 14px; background: #fff; padding: 16px;
+    box-shadow: 0 3px 14px rgba(27,37,89,.04); transition: all .2s;
+  }
+  .metric-card:hover { box-shadow: 0 6px 24px rgba(27,37,89,.08); }
+
+  /* ═══ CALENDAR ═══ */
+  .calendar-shell { height: min(65vh, 600px); min-height: 400px; }
+
+  /* ═══ NOTIFICATION TOAST ═══ */
+  .notification-toast {
+    display: flex; max-width: 340px; align-items: flex-start; gap: 12px;
+    border-radius: 12px; background: #1B2559; padding: 14px 18px;
+    color: #fff; box-shadow: 0 8px 30px rgba(27,37,89,.15);
+  }
+
+  /* ═══ UI CARD ═══ */
+  .ui-card {
+    border-radius: 14px; background: #fff; padding: 16px;
+    box-shadow: 0 3px 14px rgba(27,37,89,.04);
+  }
+
+  /* ═══ BOTTOM NAV (shared mobile) ═══ */
+  .admin-bottom-nav,
+  .patient-bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+    background: #fff; border-top: 1px solid #E9EDF7;
+    display: flex; justify-content: space-around; align-items: center;
+    padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+  }
+  .admin-bottom-nav a,
+  .admin-bottom-nav button,
+  .patient-bottom-nav a,
+  .patient-bottom-nav button {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    padding: 6px 12px; border-radius: 10px; font-size: .6rem;
+    font-weight: 600; color: #8F9BBA; background: none; border: none;
+    cursor: pointer; text-decoration: none; transition: all .15s;
+  }
+  .admin-bottom-nav a.active,
+  .patient-bottom-nav a.active { color: #4A6CF7; background: #F0F3FF; }
+  .admin-bottom-nav a:hover,
+  .admin-bottom-nav button:hover,
+  .patient-bottom-nav a:hover,
+  .patient-bottom-nav button:hover { color: #4A6CF7; }
+
+  /* ═══ MOBILE APPOINTMENT CARD (replaces table on mobile) ═══ */
+  .appt-card-mobile {
+    border: 1px solid #E9EDF7; border-radius: 12px; padding: 14px;
+    background: #fff; transition: all .2s;
+  }
+  .appt-card-mobile:hover { box-shadow: 0 3px 14px rgba(27,37,89,.06); }
+}
+
+/* ── CALENDAR OVERRIDES ───────────────────────── */
+.rbc-calendar { color: #1B2559; font-family: inherit; }
+.rbc-toolbar { gap: 8px; flex-wrap: wrap; }
+.rbc-toolbar button { border-radius: 8px; border-color: #E9EDF7; font-weight: 600; font-size: .78rem; padding: 6px 12px; }
+.rbc-toolbar button.rbc-active { background: #4A6CF7; color: #fff; border-color: #4A6CF7; }
+.rbc-header { font-weight: 600; color: #2B3674; padding: 6px 2px; font-size: .72rem; }
+.rbc-today { background: #F0F3FF !important; }
+.rbc-event { border-radius: 6px !important; font-size: .7rem; font-weight: 600; padding: 1px 4px !important; }
+.cal-available { background-color: #4A6CF7 !important; border-color: #4A6CF7 !important; }
+.cal-unavailable { background-color: #E31A1A !important; border-color: #E31A1A !important; }
+
+/* Calendar mobile */
+@media (max-width: 640px) {
+  .calendar-shell { height: 380px; min-height: 320px; }
+
+  .rbc-toolbar {
+    align-items: stretch; flex-direction: column; gap: 6px;
+    font-size: .75rem;
+  }
+  .rbc-toolbar-label { font-size: .9rem; }
+  .rbc-btn-group { display: flex; }
+  .rbc-btn-group button { flex: 1; padding: 6px 8px; font-size: .72rem; }
+  .rbc-toolbar button { width: auto; }
+  .rbc-header { font-size: .65rem; padding: 4px 1px; }
+  .rbc-date-cell { font-size: .72rem; padding: 2px 4px; }
+  .rbc-event { font-size: .6rem; }
+  .rbc-row-segment { padding: 0 1px; }
+  .rbc-month-view .rbc-month-row { min-height: 50px; }
+}
+
+/* ── ADMIN RESPONSIVE ─────────────────────────── */
+@media (max-width: 768px) {
+  .admin-sidebar { display: none; }
+  .admin-main { margin-left: 0; width: 100%; }
+  .admin-topbar { padding: 10px 16px; }
+  .admin-content { padding: 14px; padding-bottom: 80px; }
+  .topbar-user-info { display: none; }
+}
+@media (min-width: 769px) {
+  .admin-bottom-nav { display: none; }
+}
+
+/* ── PATIENT RESPONSIVE ───────────────────────── */
+@media (max-width: 767px) {
+  .patient-content { padding: 14px; padding-bottom: 80px; }
+  .header-actions .btn-outline,
+  .header-actions .btn-filled { display: none; }
+  .ui-card { padding: 14px; }
+}
+@media (min-width: 768px) {
+  .patient-bottom-nav { display: none; }
+  .mobile-menu-toggle { display: none !important; }
+  .ui-card { padding: 24px; }
+}
+
+/* ── ANIMATION ────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fadeUp .35s ease-out both; }
