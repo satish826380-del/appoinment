@@ -92,20 +92,34 @@ export default function AdminDashboard() {
         // Also mark the next appointment as in_progress
         await supabase.from('appointments').update({ status: 'in_progress' }).eq('id', nextOnSameDate.id);
 
-        // Insert a notification so the patient's real-time listener picks it up
         const slotTime = nextOnSameDate.time_slots?.slot_time?.slice(0, 5) || '';
+        const notifMessage = `You are next! Your appointment (Queue #${nextOnSameDate.queue_number}) at ${slotTime} is coming up. Please be ready.`;
+
+        // 1) Insert in-app notification (realtime listener picks this up if tab is open)
         const { error: notifError } = await supabase.from('appointment_notifications').insert({
           patient_id: nextOnSameDate.patient_id,
           appointment_id: nextOnSameDate.id,
-          message: `You are next! Your appointment (Queue #${nextOnSameDate.queue_number}) at ${slotTime} is coming up. Please be ready.`
+          message: notifMessage
         });
 
         if (notifError) {
-          console.warn('Notification insert error:', notifError.message);
-          toast.success(`Done! Next is Queue #${nextOnSameDate.queue_number} (notification could not be sent — check RLS policy).`);
-        } else {
-          toast.success(`Done! Next patient (Queue #${nextOnSameDate.queue_number}) has been notified.`);
+          console.warn('In-app notification insert error:', notifError.message);
         }
+
+        // 2) Send Web Push notification (works even if patient has left the site)
+        try {
+          await supabase.functions.invoke('send-push-notification', {
+            body: {
+              patient_id: nextOnSameDate.patient_id,
+              message: notifMessage,
+              title: '🔔 CareQueue — Your Turn!'
+            }
+          });
+        } catch (pushErr) {
+          console.warn('Push notification error:', pushErr.message);
+        }
+
+        toast.success(`Done! Next patient (Queue #${nextOnSameDate.queue_number}) has been notified.`);
       } else {
         toast.success('Marked done. No more patients in queue for this date.');
       }
